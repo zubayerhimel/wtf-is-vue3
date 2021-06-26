@@ -1,35 +1,36 @@
 <template>
   <div class="home">
-    <input type="text" v-model="search" />
-    <p>Search item - {{ search }}</p>
-    <div v-for="name in matchingName" :key="name">
-      <p>{{ name }}</p>
-    </div>
+    <h1>Home</h1>
+    <post-list :posts="posts" />
   </div>
 </template>
 
 <script>
-import { ref, computed, watch, watchEffect } from "vue";
+import { ref } from "vue";
+import PostList from "../components/PostList.vue";
 export default {
+  components: { PostList },
   name: "Home",
   setup() {
-    const search = ref("");
-    const names = ref(["Mario", "Yoshi", "Luigi", "Toad", "Bower", "Koopa", "Peach"]);
+    const posts = ref([]);
+    console.log("heheh");
+    const error = ref(null);
 
-    // watch
-    watch(search, () => {
-      console.log("watching");
-    });
-
-    watchEffect(() => {
-      console.log("Watch effect ran", search.value);
-    });
-
-    // functions
-    const matchingName = computed(() => {
-      return names.value.filter((name) => name.includes(search.value));
-    });
-    return { names, search, matchingName };
+    const load = async () => {
+      console.log("this is called");
+      try {
+        let data = await fetch("http://localhost:3000/posts");
+        if (!data.ok) {
+          throw Error("No data available");
+        }
+        posts.value = await data.json();
+      } catch (error) {
+        error.value = error.message;
+        console.log(error.value);
+      }
+    };
+    load();
+    return { posts };
   },
 };
 </script>
