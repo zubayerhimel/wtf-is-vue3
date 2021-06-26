@@ -22,7 +22,7 @@ export default {
     });
 
     watchEffect(() => {
-      console.log("Watch effect ran");
+      console.log("Watch effect ran", search.value);
     });
 
     // functions
