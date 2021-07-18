@@ -10,27 +10,13 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import GetPosts from "../composables/GetPosts";
 import PostList from "../components/PostList.vue";
 export default {
   components: { PostList },
   name: "Home",
   setup() {
-    const posts = ref([]);
-    const error = ref(null);
-    const load = async () => {
-      console.log("this is called");
-      try {
-        let data = await fetch("http://localhost:3000/posts");
-        if (!data.ok) {
-          throw Error("No data available");
-        }
-        posts.value = await data.json();
-      } catch (err) {
-        error.value = err.message;
-        console.log(error.value);
-      }
-    };
+    const { posts, error, load } = GetPosts();
     load();
     return { posts, error };
   },
