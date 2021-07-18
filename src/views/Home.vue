@@ -1,7 +1,11 @@
 <template>
   <div class="home">
     <h1>Home</h1>
-    <post-list :posts="posts" />
+    <div v-if="error">{{ error }}</div>
+    <div v-if="posts.length">
+      <post-list :posts="posts" />
+    </div>
+    <div v-else>Loading...</div>
   </div>
 </template>
 
@@ -13,9 +17,7 @@ export default {
   name: "Home",
   setup() {
     const posts = ref([]);
-    console.log("heheh");
     const error = ref(null);
-
     const load = async () => {
       console.log("this is called");
       try {
@@ -24,13 +26,13 @@ export default {
           throw Error("No data available");
         }
         posts.value = await data.json();
-      } catch (error) {
-        error.value = error.message;
+      } catch (err) {
+        error.value = err.message;
         console.log(error.value);
       }
     };
     load();
-    return { posts };
+    return { posts, error };
   },
 };
 </script>
